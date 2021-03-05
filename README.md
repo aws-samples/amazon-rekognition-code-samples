@@ -1,11 +1,12 @@
-## My Project
+# Amazon Rekognition Code Samples
 
-TODO: Fill this README out!
+This repository contains example code snippets showing how Amazon Rekognition can be used to approach a number of technical challenges.
 
-Be sure to:
+## Usage
 
-* Change the title in this README
-* Edit your repository description on GitHub
+On each folder you'll find a number of Jupyter Notebooks that you can use to learn about Amazon Rekognition.
+
+* [Virtual Proctoring](./virtual-proctoring)
 
 ## Security
 
@@ -13,5 +14,4 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## License
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
-
+This sample code is made available under the MIT-0 License. See the LICENSE file.
