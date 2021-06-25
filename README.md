@@ -4,8 +4,8 @@ This repository contains example code snippets showing how Amazon Rekognition ca
 
 ## Usage
 
-On each folder you'll find a number of Jupyter Notebooks that you can use to learn about Amazon Rekognition.
-
+In each folder, you'll find a number of Jupyter Notebooks that you can use to learn about Amazon Rekognition.
+* [Rekognition APIs](./rekognition-apis)
 * [Virtual Proctoring](./virtual-proctoring)
 
 ## Security
