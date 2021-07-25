@@ -7,6 +7,7 @@ This repository contains example code snippets showing how Amazon Rekognition ca
 In each folder, you'll find a number of Jupyter Notebooks that you can use to learn about Amazon Rekognition.
 * [Rekognition APIs](./rekognition-apis)
 * [Virtual Proctoring](./virtual-proctoring)
+* [Facial Recognition Best Practices](./facial-recognition-best-practices)
 
 ## Security
 
