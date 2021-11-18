@@ -8,6 +8,7 @@ In each folder, you'll find a number of Jupyter Notebooks that you can use to le
 * [Rekognition APIs](./rekognition-apis)
 * [Virtual Proctoring](./virtual-proctoring)
 * [Facial Recognition Best Practices](./facial-recognition-best-practices)
+* [Custom-Labels](./custom-labels)
 
 ## Security
 
