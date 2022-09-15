@@ -11,6 +11,7 @@ In each folder, you'll find a number of Jupyter Notebooks that you can use to le
 - [Facial Recognition Best Practices](./facial-recognition-best-practices)
 - [Custom-Labels](./custom-labels)
 - [Identity Verification](./identity-verification)
+- [Content-Moderation-Evaluation](./content-moderation-evaluation)
 
 ## Security
 
