@@ -5,10 +5,12 @@ This repository contains example code snippets showing how Amazon Rekognition ca
 ## Usage
 
 In each folder, you'll find a number of Jupyter Notebooks that you can use to learn about Amazon Rekognition.
-* [Rekognition APIs](./rekognition-apis)
-* [Virtual Proctoring](./virtual-proctoring)
-* [Facial Recognition Best Practices](./facial-recognition-best-practices)
-* [Custom-Labels](./custom-labels)
+
+- [Rekognition APIs](./rekognition-apis)
+- [Virtual Proctoring](./virtual-proctoring)
+- [Facial Recognition Best Practices](./facial-recognition-best-practices)
+- [Custom-Labels](./custom-labels)
+- [Identity Verification](./identity-verification)
 
 ## Security
 
@@ -17,4 +19,3 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This sample code is made available under the MIT-0 License. See the LICENSE file.
-
