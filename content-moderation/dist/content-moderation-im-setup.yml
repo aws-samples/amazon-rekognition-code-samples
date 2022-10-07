@@ -1,0 +1,327 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: |
+  This solution creates an Amazon SageMaker Studio domain along with the necessary resources required for the Content Moderation Workshop.
+Parameters:
+  UserProfileName:
+    Type: String
+    Description: The user profile name for the Content Moderation workshop
+    Default: 'SageMakerUser'
+  DomainName:
+    Type: String
+    Description: The domain name of the Sagemaker studio instance
+    Default: 'CMSagemakerDomain'
+  VPCFlowLogS3Bucket:
+    Type: String
+    Description: The S3 bucket keeps the VPC FlowLog in the same region (optional)
+    Default: ''
+  
+Mappings: 
+  RegionMap: 
+    us-east-1: 
+      datascience: "arn:aws:sagemaker:us-east-1:081325390199:image/datascience-1.0"
+    us-east-2:
+      datascience: "arn:aws:sagemaker:us-east-2:429704687514:image/datascience-1.0"   
+    us-west-2: 
+      datascience: "arn:aws:sagemaker:us-west-2:236514542706:image/datascience-1.0"
+    ap-south-1:
+      datascience: "arn:aws:sagemaker:ap-south-1:394103062818:image/datascience-1.0" 
+    ap-northeast-2:
+      datascience: "arn:aws:sagemaker:ap-northeast-2:806072073708:image/datascience-1.0"
+    ap-southeast-1:
+      datascience: "arn:aws:sagemaker:ap-southeast-1:492261229750:image/datascience-1.0"     
+    ap-southeast-2:
+      datascience: "arn:aws:sagemaker:ap-southeast-2:452832661640:image/datascience-1.0"
+    ap-northeast-1: 
+      datascience: "arn:aws:sagemaker:ap-northeast-1:102112518831:image/datascience-1.0"
+    ca-central-1:
+      datascience: "arn:aws:sagemaker:ca-central-1:310906938811:image/datascience-1.0"
+    eu-central-1: 
+      datascience: "arn:aws:sagemaker:eu-central-1:936697816551:image/datascience-1.0"
+    eu-west-1:
+      datascience: "arn:aws:sagemaker:eu-west-1:470317259841:image/datascience-1.0"
+    eu-west-2:
+      datascience: "arn:aws:sagemaker:eu-west-2:712779665605:image/datascience-1.0"
+
+Conditions:
+  CreateVpcFlowLog: !Not
+      - !Equals
+        - !Ref VPCFlowLogS3Bucket
+        - '' 
+
+Resources:
+  StudioBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join
+        - "-"
+        - - "sagemaker-studio"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration: 
+        - ServerSideEncryptionByDefault:
+            SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      AccessControl: Private
+      LoggingConfiguration:
+        LogFilePrefix: sagemaker-studio-logs
+
+  SageMakerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:      
+      Description: 'CM workshop role sagemaker studio'     
+      Policies: 
+        - PolicyName: cm-workshop-sagemaker-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - sagemaker:Describe*
+                  - sagemaker:List*
+                  - sagemaker:*App
+                  - sagemaker:CreateFlowDefinition
+                  - sagemaker:CreateHumanTaskUi
+                  - sagemaker:CreatePresignedDomainUrl
+                  - sagemaker:StartHumanLoop
+                  - cognito-idp:Describe*
+                  - cognito-idp:List*
+                  - cognito-idp:AdminAddUserToGroup
+                  - cognito-idp:AdminCreateUser
+                  - cognito-idp:AdminDeleteUser
+                  - cognito-idp:AdminDisableUser
+                  - cognito-idp:AdminEnableUser
+                  - cognito-idp:AdminRemoveUserFromGroup
+                  - cognito-idp:CreateGroup
+                  - cognito-idp:CreateUserPool*
+                  - cognito-idp:UpdateUserPool*
+                Resource: '*'
+        - PolicyName: s3-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:HeadBucket
+                  - s3:CreateBucket
+                  - s3:GetBucketLocation
+                  - s3:GetBucketCors
+                  - s3:PutBucketCors
+                  - s3:GetBucketAcl
+                  - s3:PutObjectAcl
+                  - s3:ListBucket
+                  - s3:ListAllMyBuckets
+                Resource: 
+                  - arn:aws:s3:::*SageMaker*
+                  - arn:aws:s3:::*Sagemaker*
+                  - arn:aws:s3:::*sagemaker*
+        - PolicyName: cm-workshop-comprehend-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - comprehend:Describe*
+                  - comprehend:List*
+                  - comprehend:Detect*
+                  - comprehend:ContainsPiiEntities
+                  - comprehend:StartPiiEntitiesDetectionJob
+                  - comprehend:StopPiiEntitiesDetectionJob
+                  - comprehend:StartEntitiesDetectionJob
+                  - comprehend:ClassifyDocument
+                  - comprehend:CreateDocumentClassifier
+                  - comprehend:CreateEntityRecognizer
+                  - comprehend:CreateEndpoint
+                  - comprehend:DeleteEndpoint
+                  - comprehend:DeleteDocumentClassifier
+                  - comprehend:DeleteEntityRecognizer
+                  - comprehend:StopTrainingDocumentClassifier
+                  - comprehend:StopTrainingEntityRecognizer
+                Resource: '*'
+        - PolicyName: cm-workshop-rekognition-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - rekognition:Get*
+                  - rekognition:Detect*
+                  - rekognition:StartContentModeration
+                  - rekognition:StartLabelDetection
+                  - rekognition:StartTextDetection
+                Resource: '*'
+        - PolicyName: cm-workshop-transcribe-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - transcribe:Get*
+                  - transcribe:List*
+                  - transcribe:CreateVocabulary*
+                  - transcribe:DeleteVocabulary*
+                  - transcribe:StartTranscriptionJob
+                Resource: '*'
+        - PolicyName: cm-workshop-translate-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - 
+                Effect: Allow
+                Action:
+                  - translate:TranslateText
+                Resource: '*'
+
+      AssumeRolePolicyDocument: 
+        Version: 2012-10-17
+        Statement:
+          - 
+            Effect: Allow
+            Principal: 
+              Service: 
+                - sagemaker.amazonaws.com                
+            Action: 
+              - sts:AssumeRole
+            Condition:
+              ArnLikeIfExists: 
+                aws:SourceArn: !Sub "arn:aws:sagemaker:*:${AWS::AccountId}:*"
+          - 
+            Effect: Allow
+            Principal: 
+              Service: 
+                - comprehend.amazonaws.com
+            Action: 
+              - sts:AssumeRole
+            Condition:
+              StringEquals: 
+                aws:SourceAccount: !Sub ${AWS::AccountId}
+  
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/IAMReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonAugmentedAIIntegratedAPIAccess
+
+  PassSageMakerRolePolicy:        
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: cm-workshop-pass-role
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource: !GetAtt SageMakerExecutionRole.Arn
+            Condition:
+              StringLikeIfExists:
+                "iam:PassedToService": 
+                  - "comprehend.amazonaws.com"
+                  - "sagemaker.amazonaws.com"
+      Roles:
+        - !Ref SageMakerExecutionRole
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/20
+      VpcId: !Ref VPC
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.32.0/20
+      VpcId: !Ref VPC
+
+  FlowLog:
+    Type: 'AWS::EC2::FlowLog'
+    Condition: CreateVpcFlowLog
+    Properties:
+      LogDestination: !Sub arn:aws:s3:::${VPCFlowLogS3Bucket}
+      LogDestinationType: s3
+      ResourceId: !Ref VPC
+      ResourceType: 'VPC'
+      TrafficType: REJECT
+
+  StudioDomain:
+    Type: AWS::SageMaker::Domain
+    Properties: 
+      VpcId: !Ref VPC
+      AppNetworkAccessType: PublicInternetOnly
+      AuthMode: IAM
+      DefaultUserSettings: 
+          ExecutionRole: !GetAtt SageMakerExecutionRole.Arn
+      DomainName: !Ref DomainName 
+      SubnetIds: [!Ref PrivateSubnet, !Ref PublicSubnet]
+
+  UserProfile:
+    Type: AWS::SageMaker::UserProfile
+    Properties: 
+      DomainId: !GetAtt StudioDomain.DomainId
+      UserProfileName: !Ref UserProfileName
+      UserSettings:
+        ExecutionRole: !GetAtt SageMakerExecutionRole.Arn
+
+  JupyterApp:
+    Type: AWS::SageMaker::App
+    DependsOn: UserProfile
+    Properties: 
+      AppName: default
+      AppType: JupyterServer
+      DomainId: !GetAtt StudioDomain.DomainId
+      UserProfileName: !Ref UserProfileName
+  
+  DataScienceApp:
+    Type: AWS::SageMaker::App
+    DependsOn: JupyterApp
+    Properties: 
+      AppName: instance-event-engine-datascience-ml-t3-medium
+      AppType: KernelGateway
+      DomainId: !GetAtt StudioDomain.DomainId
+      ResourceSpec: 
+        InstanceType:  ml.t3.medium
+        SageMakerImageArn: !FindInMap
+          - RegionMap
+          - !Ref 'AWS::Region'
+          - datascience
+      UserProfileName: !Ref UserProfileName
+
+  StudioBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StudioBucket
+      PolicyDocument:
+        Statement:
+          -
+            Action:
+              - s3:GetObject*
+              - s3:PutObject*
+              - s3:DeleteObject*
+              - s3:GetBucket*
+              - s3:PutBucket*
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:s3:::${StudioBucket}
+              - !Sub arn:aws:s3:::${StudioBucket}/*
+            Principal:
+              AWS:
+                - !GetAtt SageMakerExecutionRole.Arn
