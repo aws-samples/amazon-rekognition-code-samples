@@ -1,0 +1,189 @@
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+<style>
+  .wrapper {
+    position:relative;
+    display:block; /* <= shrinks container to image size */
+    overflow-y: scroll;
+    background-color: #e9ecec;
+    padding: 30px;
+    border:red 10px;
+  }
+  .img-overlay-wrap {
+    position: relative;
+    display: inline-block; /* <= shrinks container to image size */
+    transition: transform 150ms ease-in-out;
+    overflow-y: scroll;
+    background-color: #e9ecec;
+   }
+  
+  .img-overlay-wrap img { /* <= optional, for responsiveness */
+     display: block;
+     max-width: 800;
+     height: auto;
+     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .img-overlay-wrap svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .img-overlay-wrap svg rect {
+      stroke:#009879;
+      stroke-width: 2;
+      fill: #009879; 
+      fill-opacity: 20%;
+  }
+
+  .styled-table input {
+    width:100%;
+    vertical-align: top;
+  }
+  .styled-table {
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    width:auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    table-layout: auto;
+  }
+  .styled-table thead tr {
+      display: block;
+      background-color: #009879;
+      color: #ffffff;
+      text-align: center;
+      font-weight: bold;
+  }
+  .styled-table th,
+  .styled-table td {
+      padding: 12px 15px;
+      vertical-align: top;
+  }
+  .styled-table tbody {
+      width:100%;
+      display: block;
+      max-height: 600px; 
+      overflow-y: scroll;
+  }
+  .styled-table tbody tr {
+      border-bottom: 1px solid #dddddd;
+  }
+
+  .styled-table tbody tr:nth-of-type(even) {
+      background-color: #f3f3f3;
+  }
+
+  .styled-table tbody tr:hover {
+      font-weight: bold;
+      color: #009879;
+  }
+
+</style>
+<table>
+  <tr>
+    <td style="vertical-align: top;">
+        <video id="vid1" controls='controls' name='Video' width="700px" >
+            <source src='{{ task.input.s3.url | grant_read_access }}'>
+        </video>
+    </td>
+    <td>&nbsp;&nbsp;&nbsp;</td>
+    <td style="vertical-align: top; padding: 20px;">
+      <crowd-form>
+        <div>
+          <h3>Instructions</h3>
+          <p>Please review the moderation result, and make corrections where appropriate. Click on the row will navigate to the time when inappropriate or offensive content is detected. </p>
+      </div>
+      <br>
+        <p>File location: {{ task.input.s3.url }}</p>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th style="width:100px;">Starts At</th>
+                    <th style="width:350px;">Moderation Category</th>
+                    <th style="width:100px;">Confidence Score</th>
+                    <th style="width:250px;">
+                        Reviewer Feedback
+                        <br/> Apply to all: 
+                        <select id="dll-all" name="dll-all" onchange="change_all(this)">
+                            <option value="true-positive" selected>Correct category</option>
+                            <option value="false-positive">No inapporpriate information</option>
+                            <option value="wrong-category">Wrong category</option>
+                        </select>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in task.input.Results.ConditionMissed %}
+            <tr onclick="document.getElementById('vid1').currentTime={{ r.Timestamp }}/1000;">
+                <td style="width:100px;">{{ r.Timestamp }} ms</td>
+                <td style="width:350px;">{{ r.ModerationLabel.ParentName }}/{{ r.ModerationLabel.Name }}</td>
+                <td style="width:100px;">{{ r.ModerationLabel.Confidence }}%</td>
+                <td style="width:250px;">
+                    <select name="ddl-{{r.Timestamp}}-{{r.ModerationLabel.Name}}" id="ddl-{{r.Timestamp}}-{{r.ModerationLabel.Name}}" onchange="(this.value=='wrong-category') ? document.getElementById('ddl-category-{{r.Timestamp}}-{{r.ModerationLabel.Name}}').style='display:block;' : document.getElementById('ddl-category-{{r.Timestamp}}-{{r.ModerationLabel.Name}}').style='display:none;' ">
+                        <option value="true-positive" selected>Correct category</option>
+                        <option value="false-positive">No inapporpriate information</option>
+                        <option value="wrong-category">Wrong category</option>
+                    </select>
+                    <select name="ddl-category-{{r.Timestamp}}-{{r.ModerationLabel.Name}}" id="ddl-category-{{r.Timestamp}}-{{r.ModerationLabel.Name}}" style="display:none">
+                        <option value="">Select Category</option>
+                        <option value="Explicit Nudity">Explicit Nudity</option>
+                        <option value="Explicit Nudity/Nudity">- Nudity</option>
+                        <option value="Explicit Nudity/Graphic Male Nudity">- Graphic Male Nudity</option>
+                        <option value="Explicit Nudity/Graphic Female Nudity">- Graphic Female Nudity</option>
+                        <option value="Explicit Nudity/Illustrated Explicit Nudity">- Illustrated Explicit Nudity</option>
+                        <option value="Explicit Nudity/Adult Toys">- Adult Toys</option>
+                        <option value="Suggestive">Suggestive</option>
+                        <option value="Suggestive/Female Swimwear Or Underwear">- Female Swimwear Or Underwear</option>
+                        <option value="Suggestive/Male Swimwear Or Underwear">- Male Swimwear Or Underwear</option>
+                        <option value="Suggestive/Partial Nudity">- Partial Nudity</option>
+                        <option value="Suggestive/Barechested Male">- Barechested Male</option>
+                        <option value="Suggestive/Revealing Clothes">- Revealing Clothes</option>
+                        <option value="Suggestive/Sexual Situations">- Sexual Situations</option>
+                        <option value="Violence">Violence</option>
+                        <option value="Violence/Graphic Violence Or Gore">- Graphic Violence Or Gore</option>
+                        <option value="Violence/Physical Violence">- Physical Violence</option>
+                        <option value="Violence/Weapons">- Weapons</option>
+                        <option value="Violence/Self Injury">- Self Injury</option>
+                        <option value="Visually Disturbing">Visually Disturbing</option>
+                        <option value="Visually Disturbing/Emaciated Bodies">- Emaciated Bodies</option>
+                        <option value="Visually Disturbing/Corpses">- Corpses</option>
+                        <option value="Visually Disturbing/Hanging">- Hanging</option>
+                        <option value="Visually Disturbing/Air Crash">- Air Crash</option>
+                        <option value="Visually Disturbing/Explosions And Blasts">- Explosions And Blasts</option>
+                        <option value="Rude Gestures">Rude Gestures</option>
+                        <option value="Rude Gestures/Middle Finger">- Middle Finger</option>
+                        <option value="Drugs">Drugs</option>
+                        <option value="Drugs/Drug Products">- Drug Products</option>
+                        <option value="Drugs/Drug Use">- Drug Use</option>
+                        <option value="Drugs/Pills">- Pills</option>
+                        <option value="Drugs/Drug Paraphernalia">- Drug Paraphernalia</option>
+                        <option value="Tobacco">Tobacco</option>
+                        <option value="Tobacco/Tobacco Products">- Tobacco Products</option>
+                        <option value="Tobacco/Smoking">- Smoking</option>
+                        <option value="Alcohol">Alcohol</option>
+                        <option value="Alcohol/Drinking">- Drinking</option>
+                        <option value="Gambling">Gambling</option>
+                        <option value="Gambling/Gambling">- Gambling</option>
+                        <option value="Hate Symbols">Hate Symbols</option>
+                        <option value="Hate Symbols/Nazi Party">- Nazi Party</option>
+                        <option value="Hate Symbols/White Supremacy">- White Supremacy</option>
+                        <option value="Hate Symbols/Extremist">- Extremist</option>
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </crowd-form>
+    </td>
+  </tr>
+</table>
+<script>
+    function change_all(obj) {
+        {% for r in task.input.Results.ConditionMissed %} 
+            document.getElementById('ddl-{{r.Timestamp}}-{{r.ModerationLabel.Name}}').value = obj.value;
+        {% endfor %}
+    }
+</script>

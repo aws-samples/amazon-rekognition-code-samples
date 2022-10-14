@@ -12,6 +12,7 @@ In each folder, you'll find a number of Jupyter Notebooks that you can use to le
 - [Custom-Labels](./custom-labels)
 - [Identity Verification](./identity-verification)
 - [Content-Moderation-Evaluation](./content-moderation-evaluation)
+- [Content-Moderation-Workshop](./content-moderation)
 
 ## Security
 
