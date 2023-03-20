@@ -1,4 +1,4 @@
-module amazon-rekognition-code-samples/custom-labels/golang
+module github.com/aws-samples/amazon-rekognition-code-samples/custom-labels/golang
 
 go 1.20
 
