@@ -9,9 +9,8 @@ The following lab modules provide hands on use of Amazon Rekognition APIs for id
 ## Modules
 
 ---
+Core Agenda:
+- Module 1: Introduction to Amazon Rekognition. Setup and Demo Setup
+- Module 2: Using Amazon Rekognition APIs for Identity Verification workflows
+- Module 3: IDV Implementation Best Practices
 
-- Module 1: Introduction to Amazon Rekognition
-- Module 2: Amazon Rekognition APIs for Identity Verification
-- Module 3: Image Quality and Identity Verification
-- Module 4: Identify Verification Solution
-- Module 5: Metrics for Evaluating an Identity Verification Solution
