@@ -90,6 +90,7 @@ Resources:
                   - sagemaker:Describe*
                   - sagemaker:List*
                   - sagemaker:*App
+                  - sagemaker:AddTags
                   - sagemaker:CreateFlowDefinition
                   - sagemaker:CreateHumanTaskUi
                   - sagemaker:CreatePresignedDomainUrl
