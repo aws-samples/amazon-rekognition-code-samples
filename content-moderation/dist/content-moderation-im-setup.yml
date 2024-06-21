@@ -19,29 +19,29 @@ Parameters:
 Mappings: 
   RegionMap: 
     us-east-1: 
-      datascience: "arn:aws:sagemaker:us-east-1:081325390199:image/datascience-1.0"
+      datascience: "arn:aws:sagemaker:us-east-1:081325390199:image/sagemaker-data-science-310-v1"
     us-east-2:
-      datascience: "arn:aws:sagemaker:us-east-2:429704687514:image/datascience-1.0"   
+      datascience: "arn:aws:sagemaker:us-east-2:429704687514:image/sagemaker-data-science-310-v1"   
     us-west-2: 
-      datascience: "arn:aws:sagemaker:us-west-2:236514542706:image/datascience-1.0"
+      datascience: "arn:aws:sagemaker:us-west-2:236514542706:image/sagemaker-data-science-310-v1"
     ap-south-1:
-      datascience: "arn:aws:sagemaker:ap-south-1:394103062818:image/datascience-1.0" 
+      datascience: "arn:aws:sagemaker:ap-south-1:394103062818:image/sagemaker-data-science-310-v1" 
     ap-northeast-2:
-      datascience: "arn:aws:sagemaker:ap-northeast-2:806072073708:image/datascience-1.0"
+      datascience: "arn:aws:sagemaker:ap-northeast-2:806072073708:image/sagemaker-data-science-310-v1"
     ap-southeast-1:
-      datascience: "arn:aws:sagemaker:ap-southeast-1:492261229750:image/datascience-1.0"     
+      datascience: "arn:aws:sagemaker:ap-southeast-1:492261229750:image/sagemaker-data-science-310-v1"     
     ap-southeast-2:
-      datascience: "arn:aws:sagemaker:ap-southeast-2:452832661640:image/datascience-1.0"
+      datascience: "arn:aws:sagemaker:ap-southeast-2:452832661640:image/sagemaker-data-science-310-v1"
     ap-northeast-1: 
-      datascience: "arn:aws:sagemaker:ap-northeast-1:102112518831:image/datascience-1.0"
+      datascience: "arn:aws:sagemaker:ap-northeast-1:102112518831:image/sagemaker-data-science-310-v1"
     ca-central-1:
-      datascience: "arn:aws:sagemaker:ca-central-1:310906938811:image/datascience-1.0"
+      datascience: "arn:aws:sagemaker:ca-central-1:310906938811:image/sagemaker-data-science-310-v1"
     eu-central-1: 
-      datascience: "arn:aws:sagemaker:eu-central-1:936697816551:image/datascience-1.0"
+      datascience: "arn:aws:sagemaker:eu-central-1:936697816551:image/sagemaker-data-science-310-v1"
     eu-west-1:
-      datascience: "arn:aws:sagemaker:eu-west-1:470317259841:image/datascience-1.0"
+      datascience: "arn:aws:sagemaker:eu-west-1:470317259841:image/sagemaker-data-science-310-v1"
     eu-west-2:
-      datascience: "arn:aws:sagemaker:eu-west-2:712779665605:image/datascience-1.0"
+      datascience: "arn:aws:sagemaker:eu-west-2:712779665605:image/sagemaker-data-science-310-v1"
 
 Conditions:
   CreateVpcFlowLog: !Not
