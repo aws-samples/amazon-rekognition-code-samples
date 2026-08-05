@@ -1,5 +1,8 @@
 # Amazon Rekognition Code Samples
 
+> [!WARNING]
+> This repository is archived and no longer maintained. It may no longer work, or refer to third-party libraries with known problems.
+
 This repository contains example code snippets showing how Amazon Rekognition can be used to approach a number of technical challenges.
 
 ## Usage
